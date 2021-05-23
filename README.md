@@ -18,12 +18,12 @@
 
 # Options
   If you play on a 5x5 board (the default), then clicking on the right mouse
-  button will show a set of squares you can click to solve the puzzle.  The
+  button will show a set of squares you can click to solve the game.  The
   solution shown will be a 'minimal' solution in the sense that there is no other
   solution that requires clicking on fewer squares.  See the
-  [strategyd](strategy.md) for a discussion of how this solution is obtained.
+  [strategy](strategy.md) for a discussion of how this solution is obtained.
   Clicking the right mouse button again will turn off the solution.
 
   Use the middle mouse button to toggle individual squares.  Note that
-  the resulting arrangement of lights may not be a solvable puzzle.
+  the resulting arrangement of lights may not be a solvable game.
   The arrangements that the computer presents are always solvable.
