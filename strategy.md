@@ -41,7 +41,7 @@ The 25 buttons are referred to according to the following numbering:
   observation, the result of any sequence of button pushes can be obtained by a
   simpler sequence in which each button is pushed exactly 0 or 1 times.
 
-## Finding a minimal solution.
+## Minimal solutions.
 
 A solution that requires the fewest possible number of button pushes will be
 called a **minimal solution**. The winning strategy described above will not
@@ -70,11 +70,11 @@ Following the winning strategy produces the following sequence of button pushes:
 All together, the following 24 buttons get pushed.
 * 6 7 8 9 11 12 13 16 18 20 22 23 25 1 2 3 7 9 13 14 15 23 24 25
 
-By the commutativity property, the sequence can be reordered at will, so the
-following sequence produces the same result.
+Using commutativity, the sequence can be reordered, so the following sequence
+produces the same result.
 * 1 2 3 6 7 7 8 9 9 11 12 13 13 14 15 16 18 20 22 23 23 24 25 25
 
-By the parity property, the following sequence also produces the same result.
+Using parity, the following sequence also produces the same result.
 * 1 2 3 6 8 11 12 14 15 16 18 20 22 24
 
 ### Find three additional winning strategies.
