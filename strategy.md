@@ -23,8 +23,8 @@ The 25 buttons are referred to according to the following numbering:
    *  If button 22 is on, push buttons 1, 2 and 3.
    *  If button 23 is on, push buttons 2 and 3.
 
-   For example, if button 21 is on, push buttons 1 and 2.  If buttons 21 and 22
-   are on, push buttons 1 and 2, and then push buttons 1, 2 and 3.
+   For example, if only button 21 is on, push buttons 1 and 2.  If buttons 21 and
+   22 are on, push buttons 1 and 2, and then push buttons 1, 2 and 3.
 1. Repeat the first step.  The puzzle will be solved.
 
 ## A few observations
