@@ -28,35 +28,33 @@ The 25 buttons are referred to according to the following numbering:
 1. Repeat the first step.  The puzzle will be solved.
 
 ## A few observations
+* Parity - Pushing a button twice has the same effect as not pushing it at all.
+  It follows that repeatedly pushing a button an even number of times is
+  equivalent to not pushing it at all, and pushing a button an odd number of
+  times is equivalent to pushing it once.
+* Commutativity - Changing the order that buttons are pushed does not change the
+  result.  This is fairly easy to see and also not hard to prove mathematically.
+* From the commutativity property, it follows that any sequence of button pushes
+  produces the same result as a reordered sequence in which button 1 is pushed 0
+  or more times followed by button 2 being pushed 0 or more times and so on until
+  button 25 is pushed 0 or more times.  Combining this fact with the parity
+  observation, the result of any sequence of button pushes can be obtained by a
+  simpler sequence in which each button is pushed exactly 0 or 1 times.
 
-* Pushing a button twice has the same effect as not pushing it at all. It follows
-  that repeatedly pushing a button an even number of times is equivalent to not
-  pushing it at all, and pushing a button an odd number of times is equivalent to
-  pushing it once.
-* Pushing buttons is commutative. That is, changing the order that buttons are
-  pushed does not change the result.  This is fairly easy to see and also not
-  hard to prove mathematically.
-* By reordering the button pushes, any sequence of button pushes produces the same
-  result as a reordered sequence in which button 1 is pushed 0 or more times
-  followed by button 2 being pushed 0 or more times and so on until button 25 is
-  pushed 0 or more times.  Combining this fact with the first observation, any
-  sequence of button pushes has the same effect as a simpler sequence of button
-  pushes in which each button is pushed exactly 0 or 1 times.
+## Finding a minimal solution.
 
-## Winning in the fewest possible moves
+A solution that requires the fewest possible number of button pushes will be
+called a **minimal solution**. The winning strategy described above will not
+generally produce a minimal solution. However, any winning strategy can be
+mapped to a set of four winning strategies with at least one of them guaranteed
+to be a minimal solution.
 
-The winning strategy described above will not generally solve a game using the
-fewest possible button pushes.  Given a winning sequence of button pushes,
-there are two stages to reducing it to a combination that has the fewest
-possible number of button pushes.
+### Find a winning strategy in which no button is pressed more than once.
+This process is described above.  A detailed example is presented as it will be
+used to illustrate how to find a minimal solution.
 
-### Stage 1:
-Following the processes described above, find a winning strategy and then convert
-it into a winning strategy in which no button is pushed more than once.
-
-Here is an example to illustrate how to do this.  Consider the following
-starting position in which the 1's represent lights that are initally on, and
-the 0's represent lights that are initally off.
+Consider the following starting position in which the 1's represent lights that
+are initally on, and the 0's represent lights that are initally off.
 ```
 1 1 1 1 0
 1 0 0 0 1
@@ -70,19 +68,16 @@ Following the winning strategy produces the following sequence of button pushes:
 * Step 3.  7 9 13 14 15 23 24 25
 
 All together, the following 24 buttons get pushed.
+* 6 7 8 9 11 12 13 16 18 20 22 23 25 1 2 3 7 9 13 14 15 23 24 25
+
+By the commutativity property, the sequence can be reordered at will, so the
+following sequence produces the same result.
 * 1 2 3 6 7 7 8 9 9 11 12 13 13 14 15 16 18 20 22 23 23 24 25 25
 
-However, the rules for dealing with buttons pushed more than once implies that
-pushing the following sequence of only 14 buttons produces the same winning result.
+By the parity property, the following sequence also produces the same result.
 * 1 2 3 6 8 11 12 14 15 16 18 20 22 24
 
-### Stage 2:
-Stage 1 produces a winning solution in which no button is pushed more than
-once, but there may be other solutions requiring fewer button pushes. It turns
-out that any better solution is easily obtained from the solution obtained in
-Stage 1.  Three additional solutions are constructed, and the solution requiring
-the fewest number of pushes is the best overall solution.
-
+### Find three additional winning strategies.
 Any collection of button pushes in which no button is pushed more than once can
 be represented by a "template".  For example, the following template
 corresponds to pushing buttons 1, 8, 10 and 19.
@@ -96,12 +91,10 @@ P . . . .
 Specifically, a 'P' indicates the button gets pushed, while a '.' indicates the
 button does not get pushed.
 
-#### Null templates:
-
-The following three templates are special in that they are equivalent to not
-pushing any buttons at all.  If you push all of the buttons corresponding to
-any of these templates, then the exact same lights that were on when you
-started will still be the only lights on when you finish.
+The following three templates are special in that pushing all of the buttons has
+the same effect as not pushing any buttons at all. These will be called **null**
+templates. They are the only such templates as can be shown using a
+straightforward search strategy.
 ```
 Template 1        Template 2        Template 3
 P . P . P         P P . P P         . P P P .
@@ -111,35 +104,35 @@ P . P . P         . . . . .         P . P . P
 P . P . P         P P . P P         . P P P .
 ```
 
-When a solution is obtained in Stage 1, it can be represented by a template.
-For example, the template for the solution obtained in Stage 1 of this section,
-"1 2 3 6 8 11 12 14 15 16 18 20 22 24", has the following template.
+The solution for our example, "1 2 3 6 8 11 12 14 15 16 18 20 22 24", also has
+the property that no button is pushed more than once and can be expressed by a
+template.
 ```
-Solution Template
    P P P . .
    P . P . .
    P P . P P
    P . P . P
    . P . P .
-(14 buttons pushed)
 ```
+
+Templates can be combined. Where two templates have the same value for a button,
+the button is pushed 0 or 2 times, which is equivalent to 0 times, or a '.'. If
+they have different values, exactly one of those is a push, and the result is a 'P'.
 
 Combining any of the three null templates with a solution template produces
-another solution template.  Each of these solutions can be reduced to a solution
-with the fewest button pushes, and the resulting solution with the fewest
-button pushes is the solution to the original game with the fewest moves.
+three additional solution templates. The resulting solution template with the
+fewest number of 'P's is a minimal solution.
 
-This strategy is worked out for the State 1 solution..  First, calculate the
-templates that result from combining the solution template with each of the
-null templates.
+This process is worked out for the above example. Below is the original
+solution template and the three additional solution templates obtained by
+combining the original solution template with the three null templates.
 ```
-  Original           Result 1           Result 2           Result 3
+  Original           + Template 1       + Template 2       + Template 3
   P P P . .          . P . . P          . . P . .          P . . P .
   P . P . .          . . . . P          P . P . .          . . . . P
   P P . P P          P P . P P          . . . . .          . . . . .
   P . P . P          . . . . .          P . P . P          . . . . .
   . P . P .          P P P P P          P . . . P          . . P . .
- (14 pushes)        (12 pushes)        (8 pushes)         (4 pushes)
 ```
-One can easily verify that Result 3 solves the Stage 1 game with only four
-button pushes.
+The solution obtained by combining the original solution with Template 3 has
+only four button pushes and is the minimal solution.
