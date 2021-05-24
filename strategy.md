@@ -120,7 +120,7 @@ the button is pushed 0 or 2 times, which is equivalent to 0 times, or a '.'. If
 they have different values, exactly one of those is a push, and the result is a 'P'.
 
 Combining any of the three null templates with a solution template produces
-three additional solution templates. The resulting solution template with the
+three additional solution templates. A resulting solution template with the
 fewest number of 'P's is a minimal solution.
 
 This process is worked out for the above example. Below is the original
