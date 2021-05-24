@@ -92,8 +92,8 @@ Specifically, a 'P' indicates the button gets pushed, while a '.' indicates the
 button does not get pushed.
 
 The following three templates are special in that pushing all of the buttons has
-the same effect as not pushing any buttons at all. These will be called **null**
-templates. They are the only such templates as can be shown using a
+the same effect as not pushing any buttons at all. These will be called **null
+templates**. They are the only such templates as can be shown using a
 straightforward search strategy.
 ```
 Template 1        Template 2        Template 3
