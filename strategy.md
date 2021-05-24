@@ -22,23 +22,24 @@ The 25 buttons are referred to according to the following numbering:
    *  If button 21 is on, push buttons 1 and 2.
    *  If button 22 is on, push buttons 1, 2 and 3.
    *  If button 23 is on, push buttons 2 and 3.
+
    For example, if button 21 is on, push buttons 1 and 2.  If buttons 21 and 22
    are on, push buttons 1 and 2, and then push buttons 1, 2 and 3.
 1. Repeat step 1.  The puzzle should now be solved!
 
 ## A few observations
-1. Pushing a button twice is equivalent to not pushing it at all. It follows
-   that pushing a button an even number of times is equivalent to not pushing
-   it at all, and pushing a button an odd number of times is equivalent to
-   pushing it once.
-2. Pushing buttons is commutative. That is, it doesn't matter what order buttons
-   are pushed in, the result is the same. This is fairly easy to see and also
-   not hard to prove mathematically.
-3. If follows that any sequence of button pushes produces the same result as a
-   sequence of button 1 presses followed by button 2, 3, ..., 25 presses. Combining
-   this fact with the first observation, any sequence of button presses can be
-   reduced to a simpler sequence of button presses in which each button is pushed
-   exactly 0 or 1 times.
+* Pushing a button twice is equivalent to not pushing it at all. It follows
+  that pushing a button an even number of times is equivalent to not pushing
+  it at all, and pushing a button an odd number of times is equivalent to
+  pushing it once.
+* Pushing buttons is commutative. That is, it doesn't matter what order buttons
+  are pushed in, the result is the same. This is fairly easy to see and also
+  not hard to prove mathematically.
+* If follows that any sequence of button pushes produces the same result as a
+  sequence of button 1 presses followed by button 2, 3, ..., 25 presses. Combining
+  this fact with the first observation, any sequence of button presses can be
+  reduced to a simpler sequence of button presses in which each button is pushed
+  exactly 0 or 1 times.
 
 ## Winning in the fewest possible moves
 
