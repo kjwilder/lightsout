@@ -41,7 +41,7 @@ The 25 buttons are referred to according to the following numbering:
   observation, the result of any sequence of button pushes can be obtained by a
   simpler sequence in which each button is pushed exactly 0 or 1 times.
 
-## Minimal solutions.
+## Minimal solutions
 
 A solution that requires the fewest possible number of button pushes will be
 called a **minimal solution**. The winning strategy described above will not
@@ -62,25 +62,27 @@ are initally on, and the 0's represent lights that are initally off.
 0 0 1 0 0
 0 1 1 1 0
 ```
-Following the winning strategy produces the following sequence of button pushes:
+
+The winning strategy produces the following sequence of button pushes:
 * Step 1.  6 7 8 9 11 12 13 16 18 20 22 23 25
 * Step 2.  1 2 3
 * Step 3.  7 9 13 14 15 23 24 25
 
-All together, the following 24 buttons get pushed.
+All together, the following 24 buttons are pushed:
 * 6 7 8 9 11 12 13 16 18 20 22 23 25 1 2 3 7 9 13 14 15 23 24 25
 
-Using commutativity, the sequence can be reordered, so the following sequence
-produces the same result.
+Using the commutativity property, the sequence can be reordered. The
+following sequence produces the same result:
 * 1 2 3 6 7 7 8 9 9 11 12 13 13 14 15 16 18 20 22 23 23 24 25 25
 
-Using parity, the following sequence also produces the same result.
+Using the parity property, the following sequence also produces the
+same result:
 * 1 2 3 6 8 11 12 14 15 16 18 20 22 24
 
-### Find three additional winning strategies.
+### Find additional winning strategies.
 Any collection of button pushes in which no button is pushed more than once can
-be represented by a "template".  For example, the following template
-corresponds to pushing buttons 1, 8, 10 and 19.
+be represented by a **template**.  For example, the following template
+corresponds to pushing buttons 1, 8, 10 and 19 (in any order).
 ```
 P . . . .
 . . P . P
@@ -93,7 +95,8 @@ button does not get pushed.
 
 The following four templates are special in that pushing all of the buttons has
 the same effect as not pushing any buttons at all. These will be called **null
-templates** and are the only null templates as is argued below.
+templates** and are the only null templates as is argued
+[below](strategy.md#minimal-solutions).
 ```
 Template 1        Template 2        Template 3        Template 4
 . . . . .         P . P . P         P P . P P         . P P P .
@@ -103,9 +106,9 @@ Template 1        Template 2        Template 3        Template 4
 . . . . .         P . P . P         P P . P P         . P P P .
 ```
 
-The solution for our example, "1 2 3 6 8 11 12 14 15 16 18 20 22 24", also has
-the property that no button is pushed more than once and can be expressed by a
-template.
+The solution for the above example, "1 2 3 6 8 11 12 14 15 16 18 20 22 24",
+also has the property that no button is pushed more than once and can be
+expressed by a template.
 ```
    P P P . .
    P . P . .
@@ -134,13 +137,13 @@ combining the original solution template with the three null templates.
   P . P . P          . . . . .          P . P . P          . . . . .
   . P . P .          P P P P P          P . . . P          . . P . .
 ```
-The solution obtained by combining the original solution with Template 3 has
+The solution obtained by combining the original solution with Template 4 has
 only four button pushes and is the minimal solution.
 
 ## A proof that there are only three null templates.
 Start by considering the possibilities for the top row of a template.
-There are five buttons, each of which can be pushed or not, so there are 32
-different posible top rows.
+There are five buttons, each of which can be pushed or not, so there are
+2^5=32 different posible top rows.
 
 Next, suppose there is a null template **N** whose top row is:
 ```
@@ -157,11 +160,12 @@ Since **N** is a null template, applying all of **N** must leave off the three
 lights that remained off and turn off the two lights that were turned on.  The
 second row of **N** is the only row besides the top row that can change the top
 row lights, and the only top-row button a button in the second row can change
-is the button directly above it. These two facts completely determine the
-second row: If the top row of a null template leaves a light off, the button
-below it must be off in the template in order not to turn the light above it
-on. Similarly, if the top row of a null template turns a light on, the button
-below it must by on in the template in order to turn the light above it off.
+is the button directly above it. These two facts completely determine what the
+second row must be.  If the top row of a null template leaves a light off, the
+button below that light must be off in the template in order not to turn the
+light above it on. Similarly, if the top row of a null template turns a light
+on, the button below it must by on in the template in order to turn the light
+above it off.
 
 It follows that the top two rows of **N** must be:
 ```
