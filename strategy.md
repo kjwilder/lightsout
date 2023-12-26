@@ -16,35 +16,34 @@ The 25 buttons are referred to according to the following numbering:
 1. If button 1 is on, turn it off by pushing button 6, the button directly
    below button 1.  Next, in order, turn off buttons 2 through 20 by pushing the
    buttons directly below them if they are on.
-1. The puzzle has now either been solved, or there are some buttons in the
+1. The puzzle has either been solved, or there are some buttons in the
    bottom row that are on.  If the puzzle is unsolved, push buttons in the top row
    according to the following rules:
    *  If button 21 is on, push buttons 1 and 2.
    *  If button 22 is on, push buttons 1, 2 and 3.
    *  If button 23 is on, push buttons 2 and 3.
 
-   For example, if only button 21 is on, push buttons 1 and 2.  If buttons 21 and
-   22 are on, push buttons 1 and 2, and then push buttons 1, 2 and 3.
-1. Repeat the first step.  The puzzle will be solved.
-
+   Examples:
+   *  If only button 21 is on, push buttons 1 and 2.
+   *  If buttons 21 and 22 are on, push buttons 1 and 2,
+      and then push buttons 1, 2 and 3.
+1. Repeat step 1 to solve the puzzle.
+   
 ## A few observations
 * Parity - Pushing a button twice has the same effect as not pushing it at all.
   It follows that repeatedly pushing a button an even number of times is
   equivalent to not pushing it at all, and pushing a button an odd number of
   times is equivalent to pushing it once.
 * Commutativity - Changing the order that buttons are pushed does not change the
-  result.  This is fairly easy to see and also not hard to prove mathematically.
-* From the commutativity property, it follows that any sequence of button pushes
-  produces the same result as a reordered sequence in which button 1 is pushed 0
-  or more times followed by button 2 being pushed 0 or more times and so on until
-  button 25 is pushed 0 or more times.  Combining this fact with the parity
-  observation, the result of any sequence of button pushes can be obtained by a
-  simpler sequence in which each button is pushed exactly 0 or 1 times.
+  result.  This is fairly easy to see and also easy to prove mathematically.
+  
+Combining the above observations, any sequence of button pushes produces the same
+result as a sequence in which each button is pushed exactly 0 or 1 times.
 
 ## Minimal solutions
 
-A solution that requires the fewest possible number of button pushes will be
-called a **minimal solution**. The winning strategy described above will not
+I call a solution that requires the fewest possible number of button pushes a
+**minimal solution**. The winning strategy described above will not
 generally produce a minimal solution. However, any winning strategy can be
 mapped to a set of four winning strategies with at least one of them guaranteed
 to be a minimal solution.
@@ -90,13 +89,13 @@ P . . . .
 . . . P .
 . . . . .
 ```
-Specifically, a 'P' indicates the button gets pushed, while a '.' indicates the
+That is, a 'P' indicates the button gets pushed, while a '.' indicates the
 button does not get pushed.
 
 The following four templates are special in that pushing all of the buttons has
-the same effect as not pushing any buttons at all. These will be called **null
-templates** and are the only null templates as is argued
-[below](strategy.md#minimal-solutions).
+the same effect as not pushing any buttons at all. I call these **null
+templates** and explain
+[below](strategy.md#minimal-solutions) that they are the only null templates.
 ```
 Template 1        Template 2        Template 3        Template 4
 . . . . .         P . P . P         P P . P P         . P P P .
@@ -140,12 +139,12 @@ combining the original solution template with the three null templates.
 The solution obtained by combining the original solution with Template 4 has
 only four button pushes and is the minimal solution.
 
-## A proof that there are only three null templates.
-Start by considering the possibilities for the top row of a template.
+## A proof that there are only four null templates.
+Consider the possibilities for the top row of a template.
 There are five buttons, each of which can be pushed or not, so there are
 2^5=32 different posible top rows.
 
-Next, suppose there is a null template **N** whose top row is:
+Let us assume, for example, that there is a null template **N** whose top row is:
 ```
 P P P . P
 ```
@@ -171,6 +170,7 @@ It follows that the top two rows of **N** must be:
 ```
 P P P . P
 . P . . P
+```
 
 Applying these two rows to an empty game produces the following top two rows:
 ```
@@ -179,7 +179,7 @@ Applying these two rows to an empty game produces the following top two rows:
 ```
 
 Using the same argument that determined the second row of **N**, the third row
-must be `. . . P .` and the top three rows are:
+must be `. . . P .`, so the top three rows of **N** are:
 ```
 P P P . P
 . P . . P
@@ -200,6 +200,7 @@ P P P . P
 . P . . P
 . . . P .
 . P P P .
+```
 
 Applying them to an empty game produces the following top four rows:
 ```
@@ -224,9 +225,9 @@ four rows will continue to have their lights off, but the bottom row will be:
 1 1 1 0 0
 ```
 
-**N** must not be a null template, so the initial assumption that there is a null
-template whose first row is `P P P . P` is wrong. The same argument can be used
-to elimate 28 top rows and construct null templates for the remaining four.
+It follows that the earlier assumption that there is a null
+template whose first row is `P P P . P` is incorrect. The process above can be used
+to show that exactly four top rows can be part of a null template.
 
 
 
