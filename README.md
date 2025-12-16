@@ -1,4 +1,4 @@
-### Lights Out (C++ using X11)
+### Lights Out (C++ using X11, javascript port)
 
 # Compile:
 ```
