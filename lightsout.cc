@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -48,7 +47,7 @@ class xobject {
   static XColor off_color;
   static XColor on_color;
   static XColor highlight_color;
-  xobject() { if (!initX()) { cerr << "Unable to init X\n"; exit(1); } } 
+  xobject() { if (!initX()) { std::cerr << "Unable to init X\n"; exit(1); } } 
   ~xobject() { XCloseDisplay(display); } 
   static int initX();
 };
@@ -110,7 +109,7 @@ int main(int argc, char** argv) {
   parse_argv(argc, argv);
   if (seed == 0) seed = getpid();
   srand((time_t) seed);
-  if (gamesize <= 0) { cerr << "Invalid game size\n"; exit(1); }
+  if (gamesize <= 0) { std::cerr << "Invalid game size\n"; exit(1); }
   if (pixsize == 0) pixsize = 500 / gamesize;
   game thegame(gamesize);
   thegame.init_game();
@@ -216,7 +215,7 @@ void parse_argv(int argc, char** argv) {
     char *var = 0, *val;
     parse_equation(argv[count++], var, val);
     if (var != 0 && !set_global(var, val))
-      cerr << "Invalid variable [" << var << "] on command line." << endl;
+      std::cerr << "Invalid variable [" << var << "] on command line." << endl;
   }
 }
 
