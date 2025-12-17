@@ -8,13 +8,13 @@
 
   const nullTemplateCache = new Map();
 
-  let size = 5;
-  let gameGrid = [];
-  let startGrid = [];
-  let clicks = 0;
-  let showSolution = false;
-
-  const directions = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]];
+  let gameData = {
+    size: 5,
+    startGrid: [],
+    currentGrid: [],
+    clicks: 0,
+    showSolution: false,
+  }
 
   function emptyGrid(n) {
     return Array.from(
@@ -33,12 +33,16 @@
     );
   }
 
+  function clearGrid(grid) {
+    grid.forEach(row => row.fill(false));
+  }
+
   function isSolved(grid) {
     return grid.every((row) => row.every((cell) => cell === false));
   }
 
   function toggleCell(grid, r, c) {
-    directions.forEach(([dr, dc]) => {
+    [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => {
       const nr = r + dr;
       const nc = c + dc;
       if (nr >= 0 && nr < grid.length && nc >= 0 && nc < grid.length) {
@@ -71,17 +75,17 @@
     game = emptyGrid(size);
     while (isSolved(game)) {
       // Apply several random toggles.
-      const randomClicks = size * 2
+      const randomClicks = Math.ceil(size ** 2 / 2);
       for (let i = 0; i < randomClicks; i += 1) {
         const r = Math.floor(Math.random() * size);
         const c = Math.floor(Math.random() * size);
         toggleCell(game, r, c);
       }
     }
+    gameData.startGrid = duplicateGrid(game);
 
-    showSolution = false;
-    startGrid = duplicateGrid(game);
-    clicks = 0;
+    gameData.showSolution = false;
+    gameData.clicks = 0;
     updateBoard(game);
     messageEl.textContent = '';
     return game
@@ -118,83 +122,62 @@
     }
 
     nullTemplateCache.set(size, nullTemplates);
-    console.log(`Computed ${nullTemplates.length} templates of size ${size}`);
-    if (nullTemplates.length > 0) {
-      console.log(`First template: ${Array.from(nullTemplates[0])}`);
-    }
     return nullTemplates;
   }
 
   function solve(grid) {
+    let done = false;
     const solver = emptyGrid(grid.length);
-    const work = duplicateGrid(grid);
+    for (let k = 0; k < 2 ** grid.length && !done; k += 1) {
+      clearGrid(solver);
+      const work = duplicateGrid(grid);
 
-    for (let i = 0; i < grid.length - 1; i += 1) {
-      for (let j = 0; j < grid.length; j += 1) {
-        if (work[i][j]) {
-          toggleCell(work, i + 1, j);
-          solver[i + 1][j] = !solver[i + 1][j];
+      const template = new Set();
+      const templateGrid = emptyGrid(grid.length);
+      for (let bit = 0; bit < grid.length; bit += 1) {
+        if (k & (1 << bit)) {
+          solver[0][bit] = true
+          toggleCell(work, 0, bit);
         }
       }
-    }
 
-    if (work[grid.length - 1][0]) {
-      toggleCell(work, 0, 0);
-      toggleCell(work, 0, 1);
-      solver[0][0] = !solver[0][0];
-      solver[0][1] = !solver[0][1];
-    }
-    if (work[grid.length - 1][1]) {
-      toggleCell(work, 0, 0);
-      toggleCell(work, 0, 1);
-      toggleCell(work, 0, 2);
-      solver[0][0] = !solver[0][0];
-      solver[0][1] = !solver[0][1];
-      solver[0][2] = !solver[0][2];
-    }
-    if (work[grid.length - 1][2]) {
-      toggleCell(work, 0, 1);
-      toggleCell(work, 0, 2);
-      solver[0][1] = !solver[0][1];
-      solver[0][2] = !solver[0][2];
-    }
-
-    for (let i = 0; i < grid.length - 1; i += 1) {
-      for (let j = 0; j < grid.length; j += 1) {
-        if (work[i][j]) {
-          toggleCell(work, i + 1, j);
-          solver[i + 1][j] = !solver[i + 1][j];
+      for (let i = 0; i < grid.length - 1; i += 1) {
+        for (let j = 0; j < grid.length; j += 1) {
+          if (work[i][j]) {
+            toggleCell(work, i + 1, j);
+            solver[i + 1][j] = !solver[i + 1][j];
+          }
         }
       }
+      done = countOn(work) === 0;
     }
 
-    if (countOn(work) !== 0) {
+    if (!done) {
+      messageEl.textContent = 'Unable to solve grid';
       return emptyGrid(grid.length);
     }
+    messageEl.textContent = '';
 
-    const nullTemplates = getNullTemplates(grid.length);
     let bestSolver = solver;
-
-    nullTemplates.forEach((template) => {
+    getNullTemplates(grid.length).forEach((template) => {
       const candidate = invertIndices(solver, template);
       if (countOn(candidate) < countOn(bestSolver)) {
         bestSolver = candidate;
       }
     });
-
     return bestSolver;
   }
 
-  function handleClick(row, col, shiftkey) {
+  function handleClick(row, col, shiftkey, grid) {
     if (shiftkey) {
-      gameGrid[row][col] = !gameGrid[row][col];
+      grid[row][col] = !grid[row][col];
     } else {
-      toggleCell(gameGrid, row, col);
+      toggleCell(grid, row, col);
     }
-    clicks += 1;
-    updateBoard(gameGrid);
-    if (isSolved(gameGrid)) {
-      messageEl.textContent = `Solved with ${clicks} click${clicks === 1 ? '' : 's'}!`;
+    gameData.clicks += 1;
+    updateBoard(grid);
+    if (isSolved(grid)) {
+      messageEl.textContent = `Solved with ${gameData.clicks} click${gameData.clicks === 1 ? '' : 's'}!`;
     } else {
       messageEl.textContent = '';
     }
@@ -202,10 +185,10 @@
 
   function updateBoard(grid) {
     boardEl.innerHTML = '';
-    boardEl.style.gridTemplateColumns = `repeat(${size}, 64px)`;
-    statusEl.textContent = `Clicks: ${clicks}`;
+    boardEl.style.gridTemplateColumns = `repeat(${gameData.size}, 64px)`;
+    statusEl.textContent = `Clicks: ${gameData.clicks}`;
 
-    const solutionGrid = showSolution ? solve(grid) : null;
+    const solutionGrid = gameData.showSolution ? solve(grid) : null;
 
     grid.forEach((row, r) => {
       row.forEach((cell, c) => {
@@ -213,7 +196,8 @@
         button.type = 'button';
         button.className = `cell ${cell ? 'on' : 'off'}`;
         button.setAttribute('aria-label', `Row ${r + 1} column ${c + 1}, ${cell ? 'on' : 'off'}`);
-        button.addEventListener('click', (event) => handleClick(r, c, event.shiftKey));
+        button.addEventListener('click',
+          (event) => handleClick( r, c, event.shiftKey, gameData.currentGrid));
 
         if (solutionGrid && solutionGrid[r][c]) {
           const marker = document.createElement('span');
@@ -225,25 +209,20 @@
         boardEl.appendChild(button);
       });
     });
-
   }
 
   function resetBoard() {
-    gameGrid = duplicateGrid(startGrid);
-    clicks = 0;
-    updateBoard(gameGrid);
+    gameData.currentGrid = duplicateGrid(gameData.startGrid);
+    gameData.clicks = 0;
+    updateBoard(gameData.currentGrid);
     messageEl.textContent = '';
   }
 
   controlsForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const newSize = parseInt(sizeInput.value, 10);
-    if (Number.isNaN(newSize) || newSize < 3 || newSize > 12) {
-      messageEl.textContent = 'Please choose a board size between 3 and 12.';
-      return;
-    }
-    size = newSize;
-    gameGrid = randomGame(size);
+    gameData.size = newSize;
+    gameData.currentGrid = randomGame(newSize);
   });
 
   resetButton.addEventListener('click', resetBoard);
@@ -251,10 +230,13 @@
   document.addEventListener('keydown', (event) => {
     if (event.code === 'Space') {
         event.preventDefault();
-        showSolution = !showSolution;
-        updateBoard(gameGrid);
+        gameData.showSolution = !gameData.showSolution;
+        if (!gameData.showSolution) {
+          messageEl.textContent = '';
+        }
+        updateBoard(gameData.currentGrid);
     }
   });
 
-  gameGrid = randomGame(size);
+  gameData.currentGrid = randomGame(gameData.size);
 })();
