@@ -1,7 +1,10 @@
 # Lights Out Strategy (5x5 Game)
 
-Sharpen your play with a repeatable plan for solving any 5x5 Lights Out puzzle. This guide
-describes the notation, the core three-step strategy, and the reasoning behind why it works.
+This guide describes:
+1. Notation
+2. A three-step winning strategy.
+3. Reasoning, along with examples, of why the strategy works.
+4. Minimal winning strategies.
 
 ---
 
@@ -15,14 +18,14 @@ The 25 squares are numbered as follows:
 21 22 23 24 25
 ```
 
-*A quick note on “toggling”*: touching any square flips it—on to off or off to on—and also flips
+*A note on “toggling”*: touching any square flips it—on to off or off to on—and also flips
 the squares directly above, below, and to either side. The goal is to turn off every light.
 
 Examples of a single touch:
 - Touching square **5** toggles squares **4**, **5**, and **10**.
 - Touching square **19** toggles squares **14**, **18**, **19**, **20**, and **24**.
 
-## The Three-Step Winning Strategy
+## A Three-Step Winning Strategy
 1. **Sweep from the top.**
    - If square **1** is on, turn it off by touching square **6** (the square directly below).
    - Continue down the grid: for squares **2** through **20**, turn off any light in a row by touching the square directly beneath it.
@@ -60,7 +63,7 @@ Combined sequence: **6 7 8 9 11 12 13 16 18 20 22 23 25 1 2 3 7 9 13 14 15 23 24
 
 ## Key Concepts
 - **Equivalent** — Two sequences of touches are equivalent if they produce the same board.
-- **Parity** — Touching a square twice in a row is the same as not touching it. Even counts cancel; odd counts act like a single touch.
+- **Parity** — Touching a square twice in a row is the same as not touching it. Even counts cancel while odd counts act like a single touch.
 - **Commutativity** — The order of touches does not matter. Any reordering of the same touches is equivalent.
 - **Simple sequence** — A sequence where each square is touched at most once.
 
@@ -115,7 +118,9 @@ The combination with **Template 4** has only four touches, making it the minimal
 ---
 
 ## Why There Are Only Four Null Templates
-Consider the possible top rows of a null template. With five squares, there are 2^5 = 32 options. Assuming a null template **N** starts with:
+
+Consider the possible top rows of a null template. With five squares, there are
+2^5 = 32 options. Let us explore a potential null template **N** whose top row is:
 ```
 P P P . P
 ```
@@ -125,7 +130,10 @@ Starting from all lights off and touching those squares would make the top row:
 0 1 0 0 1
 ```
 
-Because **N** must return the board to all off, the second row is forced: only a square directly below can toggle a top-row light. If a light stays off in the top row, the square below must be off; if a light turns on, the square below must be on to turn it back off.
+Because **N** must return the board to all off, the second row is forced as only
+a square directly below can toggle a top-row light. If a light stays off in the
+top row, the square below must be off; if a light turns on, the square below
+must be on to turn it back off.
 
 Thus the top two rows of **N** are:
 ```
@@ -133,7 +141,7 @@ P P P . P
 . P . . P
 ```
 
-Applying these rows to an empty board produces:
+Applying these rows to an empty board produces the following top two rows:
 ```
 0 0 0 0 0
 0 0 0 1 0
@@ -146,7 +154,7 @@ P P P . P
 . . . P .
 ```
 
-Applied to an empty board, they produce:
+Applying these rows to an empty board produces the following top three rows:
 ```
 0 0 0 0 0
 0 0 0 0 0
@@ -161,7 +169,7 @@ P P P . P
 . P P P .
 ```
 
-Applying them to an empty game yields:
+Applying these rows to an empty board produces the following top four rows:
 ```
 0 0 0 0 0
 0 0 0 0 0
@@ -178,9 +186,12 @@ P P P . P
 P . P P P
 ```
 
-However, this is not a null template: after applying it to an empty board, the bottom row is
+However, this is not a null template: Applying it to an empty board produces
+the following bottom row:
 ```
 1 1 1 0 0
 ```
 
-Therefore, any null template starting with `P P P . P` is impossible. Repeating this reasoning across all 32 starting rows leaves only the four null templates listed above.
+Therefore, a null template whose top row is `P P P . P` is impossible.
+Repeating this reasoning across all 32 starting rows leaves only the four null
+templates listed above.
