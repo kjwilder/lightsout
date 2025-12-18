@@ -1,22 +1,29 @@
-### Lights Out (C++ using X11, javascript port)
+# Lights Out
 
-# Compile:
+### Play online javscript version:
+
+https://kjwilder.github.io/lightsout/
+
+### C++ Version (requires X11 library)
+
+#### Compile:
 ```
   g++ -Wall -O lightsout.cc -o lightsout -L/usr/X11R6/lib -lX11
 ```
+(-L and -l flags may be different on your platform)
 
-# Run:
+#### Run:
 ```
   ./lightsout
   ./lightsout gamesize=10
 ```
 
-# How to play:
+#### How to play:
   Turn off all the lights.  Clicking on any square will toggle its on/off
   status as well as the on/off status of the lights immediately next to
   it both horizontally and vertically.
 
-# Options
+#### Options
   If you play on a 5x5 board (the default), then clicking on the right mouse
   button will show a set of squares you can click to solve the game.  The
   solution shown will be a 'minimal' solution in the sense that there is no other
