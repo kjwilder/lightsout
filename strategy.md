@@ -83,8 +83,8 @@ For the worked example, we produce a simple solution as follows:
    9 13 14 15 23 24 25**
 2. **Reordered winning sequence** : **1 2 3 6 7 7 8 9 9 11 12 13 13 14 15 16
    18 20 22 23 23 24 25 25**
-3. **Final simple solution after removing even runs** (parity): **1 2 3 6 8 11
-   12 14 15 16 18 20 22 24**
+3. **Final simple solution after removing even runs**: **1 2 3 6 8 11 12 14 15
+   16 18 20 22 24**
 
 Any simple sequence can be represented by a template such as the one below for
 the above simple solution.
@@ -166,8 +166,8 @@ so there are 2^5 = 32 possibilities. Let us explore a potential null template
 P P P . P
 ```
 
-If we start with a solved game in which all lights are off and touch those
-squares, to top row will become:
+If we start with a solved game in which all lights are off and touch the
+squares corresponding to that top row , the top row of the game will become:
 ```
 0 1 0 0 1
 ```
