@@ -11,98 +11,424 @@
     <title>Lights Out!</title>
     <style>
       body {
-        background: #0d1117;
-        color: #e6edf3;
+        background: #f5f7fa;
+        color: #1a1a2e;
       }
       .board {
         display: grid;
-        gap: 2px;
+        gap: 4px;
         margin-top: 1rem;
+        justify-content: center;
       }
       .cell {
-        width: 64px;
-        height: 64px;
-        border: 1px solid silver;
-        border-radius: 4px;
+        border: 1px solid #c8cfd8;
+        border-radius: 8px;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 80ms ease-in-out;
+        transition: transform 80ms ease-in-out, box-shadow 120ms ease;
+        cursor: pointer;
       }
       .cell:active {
         transform: scale(0.95);
       }
+      .cell:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      }
       .cell.on {
-        background: #ffd83d;
-        box-shadow: 0 0 8px rgba(255, 216, 61, 0.6);
-        color: #0d1117;
+        background: #fdd835;
+        border-color: #f9c800;
+        box-shadow: 0 2px 10px rgba(253, 216, 53, 0.45);
+        color: #1a1a2e;
       }
       .cell.off {
-        background: #2c3440;
-        color: #9aa5b1;
+        background: #d5e5e3;
+        border-color: #b8cfcc;
+        color: #6b8a85;
       }
       .solution-mark {
-        width: 18px;
-        height: 18px;
-        background: #32ffd0;
+        width: 30%;
+        height: 30%;
+        background: #4b0082;
         border-radius: 2px;
-        box-shadow: 0 0 6px rgba(50, 255, 200, 0.7);
-      }
-      .status-badge {
-        min-width: 160px;
+        box-shadow: 0 0 6px rgba(75, 0, 130, 0.5);
       }
     </style>
   </head>
   <body>
     <div class="container py-4">
-      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-        <div>
-          <h1 class="mb-1">Lights Out!</h1>
-          <p class="mb-0 text-secondary">Toggle lights to turn all lights off.</p>
-        </div>
-        <span id="status" class="badge bg-warning text-dark status-badge">Moves: 0</span>
-      </div>
+      <h1 class="mb-1">Lights Out!</h1>
+      <p class="mb-0 text-muted">Toggle lights to turn all lights off.</p>
 
-      <div class="card mt-4 bg-dark border-secondary shadow-sm">
-        <div class="card-body">
-          <form class="row g-3 align-items-end" id="controls" novalidate>
-            <div class="col-sm-4 col-md-3">
-              <label for="size" class="form-label">Board size</label>
-              <select class="form-control" id="size" required></select>
-              <script>
-                const select = document.getElementById("size");
-                for (let i = 3; i <= 12; i++) {
-                  const option = document.createElement("option");
-                  option.value = i;
-                  option.textContent = i;
-                  if (i === 5) option.selected = true;
-                  select.appendChild(option);
-                }
-              </script>
-
-            </div>
-            <div class="col-sm-8 col-md-9 d-flex flex-wrap gap-2">
-              <button class="btn btn-primary" type="submit">New game</button>
-              <button class="btn btn-outline-light" type="button" id="reset">Reset</button>
-            </div>
+      <div class="card mt-4 border shadow-sm">
+        <div class="card-body text-center">
+          <form class="d-flex align-items-center justify-content-center flex-wrap gap-2" id="controls" novalidate>
+            <select class="form-select form-select-sm" id="size" required style="width:auto;" aria-label="Board size"></select>
+            <script>
+              const select = document.getElementById("size");
+              for (let i = 3; i <= 16; i++) {
+                const option = document.createElement("option");
+                option.value = i;
+                option.textContent = i + "\u00d7" + i;
+                if (i === 5) option.selected = true;
+                select.appendChild(option);
+              }
+            </script>
+            <button class="btn btn-primary btn-sm" type="submit">New game</button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" id="reset">Reset</button>
+            <span id="status" class="badge bg-warning text-dark fs-6">Clicks: 0</span>
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle" data-bs-toggle="modal" data-bs-target="#helpModal" aria-label="Help" style="width:28px;height:28px;padding:0;font-size:.8rem;">?</button>
           </form>
-          <div id="message" class="mt-3 text-info"></div>
+          <div id="message" class="mt-3 fw-semibold" style="min-height:1.5em;">&nbsp;</div>
           <div id="board" class="board" aria-live="polite"></div>
         </div>
       </div>
 
-      <div class="mt-4">
-        <h2 class="h5">How to play</h2>
-        <p class="text-secondary mb-1">Click a light to toggle it and its left, right, up and down neighbors. Turn every light off to win.</p>
-        <p class="text-secondary mb-1">Shift-Click a light to toggle a single light. The resulting game may be unsolvable.</p>
-        <p class="text-secondary mb-1">"New game" creates a random solvable puzzle.</p>
-        <p class="text-secondary mb-1">"Reset" restores the starting puzzle.</p>
-        <p class="text-secondary mb-1">&lt;space&gt; key toggles showing an optimal solution.</p>
+      <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="helpModalLabel">How to play</h5>
+            </div>
+            <div class="modal-body text-start">
+              <p class="mb-1">Click a light to toggle it and its left, right, up and down neighbors. Turn every light off to win.</p>
+              <p class="mb-1">Shift-Click a light to toggle a single light. The resulting game may be unsolvable.</p>
+              <p class="mb-1">"New game" creates a random solvable puzzle.</p>
+              <p class="mb-1">"Reset" restores the starting puzzle.</p>
+              <p class="mb-1">&lt;space&gt; key toggles showing an optimal solution.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src="lightsout.js"></script>
+    <script>
+    (function () {
+      const boardEl = document.getElementById('board');
+      const statusEl = document.getElementById('status');
+      const messageEl = document.getElementById('message');
+      const sizeInput = document.getElementById('size');
+      const controlsForm = document.getElementById('controls');
+      const resetButton = document.getElementById('reset');
+
+      const helpModalEl = document.getElementById('helpModal');
+      const helpModal = new bootstrap.Modal(helpModalEl);
+      function dismissHelp() { helpModal.hide(); }
+      helpModalEl.addEventListener('shown.bs.modal', () => {
+        document.addEventListener('keydown', dismissHelp, { once: true });
+        helpModalEl.addEventListener('click', dismissHelp, { once: true });
+      });
+      helpModalEl.addEventListener('hidden.bs.modal', () => {
+        document.activeElement.blur();
+      });
+
+      const nullTemplateCache = new Map();
+
+      let gameData = {
+        size: 5,
+        startGrid: [],
+        currentGrid: [],
+        clicks: 0,
+        showSolution: false,
+      }
+
+      function emptyGrid(n) {
+        return Array.from(
+          { length: n }, () => Array.from({ length: n }, () => false));
+      }
+
+      function duplicateGrid(grid) {
+        return grid.map((row) => [...row]);
+      }
+
+      function countOn(grid) {
+        return grid.reduce(
+          (total, row) =>
+            total + row.reduce((rowTotal, cell) => rowTotal + (cell ? 1 : 0), 0),
+          0,
+        );
+      }
+
+      function clearGrid(grid) {
+        grid.forEach(row => row.fill(false));
+      }
+
+      function isSolved(grid) {
+        return grid.every((row) => row.every((cell) => cell === false));
+      }
+
+      function toggleCell(grid, r, c) {
+        [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => {
+          const nr = r + dr;
+          const nc = c + dc;
+          if (nr >= 0 && nr < grid.length && nc >= 0 && nc < grid.length) {
+            grid[nr][nc] = !grid[nr][nc];
+          }
+        });
+      }
+
+      function invertIndices(grid, indices) {
+        const inverted = duplicateGrid(grid);
+        indices.forEach((idx) => {
+          const r = Math.floor(idx / grid.length);
+          const c = idx % grid.length;
+          inverted[r][c] = !inverted[r][c];
+        });
+        return inverted;
+      }
+
+      function toggleCells(grid, indices) {
+        const toggled = duplicateGrid(grid);
+        indices.forEach((idx) => {
+          const r = Math.floor(idx / grid.length);
+          const c = idx % grid.length;
+          toggleCell(toggled, r, c);
+        });
+        return toggled;
+      }
+
+      function randomGame(size) {
+        game = emptyGrid(size);
+        while (isSolved(game)) {
+          const randomClicks = Math.ceil(size ** 2 / 2);
+          for (let i = 0; i < randomClicks; i += 1) {
+            const r = Math.floor(Math.random() * size);
+            const c = Math.floor(Math.random() * size);
+            toggleCell(game, r, c);
+          }
+        }
+        gameData.startGrid = duplicateGrid(game);
+
+        gameData.showSolution = false;
+        gameData.clicks = 0;
+        updateBoard(game);
+        messageEl.textContent = '\u00a0'; messageEl.style.color = '';
+        return game
+      }
+
+      function getNullTemplates(size) {
+        if (nullTemplateCache.has(size)) {
+          return nullTemplateCache.get(size);
+        }
+
+        const nullTemplates = [];
+        for (let i = 1; i < 2 ** size; i += 1) {
+          const template = new Set();
+          const templateGrid = emptyGrid(size);
+          for (let bit = 0; bit < size; bit += 1) {
+            if (i & (1 << bit)) {
+              template.add(bit);
+              toggleCell(templateGrid, 0, bit);
+            }
+          }
+
+          for (let j = size; j < size * size; j += 1) {
+            const r = Math.floor(j / size);
+            const c = j % size;
+            if (templateGrid[r - 1][c]) {
+              template.add(j);
+              toggleCell(templateGrid, r, c);
+            }
+          }
+          if (isSolved(templateGrid)) {
+            nullTemplates.push(template);
+          }
+        }
+
+        nullTemplateCache.set(size, nullTemplates);
+        return nullTemplates;
+      }
+
+      function solve(grid) {
+        let done = false;
+        const solver = emptyGrid(grid.length);
+        for (let k = 0; k < 2 ** grid.length && !done; k += 1) {
+          clearGrid(solver);
+          const work = duplicateGrid(grid);
+
+          const template = new Set();
+          const templateGrid = emptyGrid(grid.length);
+          for (let bit = 0; bit < grid.length; bit += 1) {
+            if (k & (1 << bit)) {
+              solver[0][bit] = true
+              toggleCell(work, 0, bit);
+            }
+          }
+
+          for (let i = 0; i < grid.length - 1; i += 1) {
+            for (let j = 0; j < grid.length; j += 1) {
+              if (work[i][j]) {
+                toggleCell(work, i + 1, j);
+                solver[i + 1][j] = !solver[i + 1][j];
+              }
+            }
+          }
+          done = countOn(work) === 0;
+        }
+
+        if (!done) {
+          return null;
+        }
+
+        let bestSolver = solver;
+        getNullTemplates(grid.length).forEach((template) => {
+          const candidate = invertIndices(solver, template);
+          if (countOn(candidate) < countOn(bestSolver)) {
+            bestSolver = candidate;
+          }
+        });
+        return bestSolver;
+      }
+
+      let celebrating = false;
+
+      function celebrate(clicks) {
+        celebrating = true;
+        const cells = boardEl.querySelectorAll('.cell');
+        const total = cells.length;
+        cells.forEach((cell, i) => {
+          setTimeout(() => {
+            cell.classList.remove('off');
+            cell.classList.add('on');
+          }, i * 80);
+          setTimeout(() => {
+            cell.classList.remove('on');
+            cell.classList.add('off');
+            if (i === total - 1) {
+              celebrating = false;
+              messageEl.textContent = `Solved with ${clicks} click${clicks === 1 ? '' : 's'}!`;
+              messageEl.style.color = '#198754';
+            }
+          }, (i + 1) * 80);
+        });
+      }
+
+      function handleClick(row, col, shiftkey, grid) {
+        if (celebrating) return;
+        if (shiftkey) {
+          grid[row][col] = !grid[row][col];
+        } else {
+          toggleCell(grid, row, col);
+        }
+        gameData.clicks += 1;
+        updateBoard(grid);
+        if (isSolved(grid)) {
+          celebrate(gameData.clicks);
+        } else {
+          messageEl.textContent = '\u00a0'; messageEl.style.color = '';
+        }
+      }
+
+      function cellSize(n) {
+        const gap = 4;
+        const maxW = Math.min(window.innerWidth - 48, boardEl.parentElement.clientWidth - 48);
+        const boardTop = boardEl.getBoundingClientRect().top + window.scrollY;
+        const maxH = window.innerHeight - boardTop - 24;
+        const fitW = Math.floor((maxW - gap * (n - 1)) / n);
+        const fitH = Math.floor((maxH - gap * (n - 1)) / n);
+        return Math.max(16, Math.min(64, fitW, fitH));
+      }
+
+      function renderBoard(grid, solutionGrid) {
+        boardEl.innerHTML = '';
+        const size = cellSize(gameData.size);
+        boardEl.style.gridTemplateColumns = `repeat(${gameData.size}, ${size}px)`;
+        statusEl.textContent = `Clicks: ${gameData.clicks}`;
+
+        grid.forEach((row, r) => {
+          row.forEach((cell, c) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.style.width = size + 'px';
+            button.style.height = size + 'px';
+            button.className = `cell ${cell ? 'on' : 'off'}`;
+            button.setAttribute('aria-label', `Row ${r + 1} column ${c + 1}, ${cell ? 'on' : 'off'}`);
+            button.addEventListener('click',
+              (event) => handleClick( r, c, event.shiftKey, gameData.currentGrid));
+
+            if (solutionGrid && solutionGrid[r][c]) {
+              const marker = document.createElement('span');
+              marker.className = 'solution-mark';
+              marker.setAttribute('aria-label', 'Suggested toggle');
+              button.appendChild(marker);
+            }
+
+            boardEl.appendChild(button);
+          });
+        });
+      }
+
+      let solveTimer = null;
+
+      function updateBoard(grid) {
+        if (solveTimer) { clearTimeout(solveTimer); solveTimer = null; }
+
+        if (gameData.showSolution) {
+          renderBoard(grid, null);
+          messageEl.textContent = 'Solving\u2026';
+          messageEl.style.color = '#6c757d';
+          boardEl.style.opacity = '0.5';
+          solveTimer = setTimeout(() => {
+            const solutionGrid = solve(grid);
+            boardEl.style.opacity = '';
+            if (solutionGrid === null) {
+              messageEl.textContent = 'Unable to solve grid';
+              messageEl.style.color = '#dc3545';
+            } else if (isSolved(grid)) {
+              messageEl.textContent = `Solved with ${gameData.clicks} click${gameData.clicks === 1 ? '' : 's'}!`;
+              messageEl.style.color = '#198754';
+            } else {
+              messageEl.textContent = '\u00a0'; messageEl.style.color = '';
+            }
+            if (gameData.showSolution) {
+              renderBoard(grid, solutionGrid);
+            }
+          }, 0);
+        } else {
+          boardEl.style.opacity = '';
+          renderBoard(grid, null);
+        }
+      }
+
+      function resetBoard() {
+        gameData.currentGrid = duplicateGrid(gameData.startGrid);
+        gameData.clicks = 0;
+        updateBoard(gameData.currentGrid);
+        messageEl.textContent = '\u00a0'; messageEl.style.color = '';
+      }
+
+      controlsForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const newSize = parseInt(sizeInput.value, 10);
+        gameData.size = newSize;
+        gameData.currentGrid = randomGame(newSize);
+      });
+
+      resetButton.addEventListener('click', resetBoard);
+
+      sizeInput.addEventListener('change', () => {
+        controlsForm.requestSubmit();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.code === 'Space') {
+            event.preventDefault();
+            gameData.showSolution = !gameData.showSolution;
+            if (!gameData.showSolution) {
+              messageEl.textContent = '\u00a0'; messageEl.style.color = '';
+            }
+            updateBoard(gameData.currentGrid);
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (gameData.currentGrid.length) updateBoard(gameData.currentGrid);
+      });
+
+      gameData.currentGrid = randomGame(gameData.size);
+    })();
+    </script>
   </body>
 </html>
